@@ -1,0 +1,33 @@
+# FastAPI Backend Dependencies
+
+# Core FastAPI dependencies
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+pydantic==2.9.2
+
+# Data processing and ML libraries
+numpy>=1.26.0
+pandas>=2.2.0
+
+# Machine Learning frameworks
+scikit-learn>=1.5.0
+
+# Optional: Additional useful libraries
+python-multipart==0.0.12  # For handling file uploads if needed
+python-dotenv==1.0.1      # For environment variable management
+requests==2.32.3          # For making HTTP requests if needed
+
+# ==========================================
+# OPTIONAL ML FRAMEWORKS (Install separately if needed)
+# ==========================================
+# TensorFlow and PyTorch are large packages that you may not need immediately.
+# Install them separately when you're ready to integrate your ML model:
+#
+# For TensorFlow (deep learning):
+#   pip install tensorflow>=2.20.0
+#
+# For PyTorch (deep learning):
+#   pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+#   (or visit https://pytorch.org/get-started/locally/ for the right command for your system)
+#
+# These are commented out to avoid installation issues and reduce initial setup time.
