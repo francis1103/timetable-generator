@@ -1,0 +1,11 @@
+room_id,name,capacity,room_type,building,floor,facilities
+R101,Lecture Hall A,60,lecture_hall,A,1,projector;whiteboard
+R102,Lecture Hall B,55,lecture_hall,A,1,projector;whiteboard;audio
+R103,Seminar Room 1,30,seminar_room,A,2,whiteboard;tv
+R104,Seminar Room 2,25,seminar_room,A,2,whiteboard
+L201,Computer Lab 1,40,computer_lab,B,2,computers;projector;whiteboard
+L202,Computer Lab 2,35,computer_lab,B,2,computers;projector
+L203,Physics Lab,40,laboratory,C,1,equipment;safety gear
+L204,Chemistry Lab,35,laboratory,C,1,equipment;safety gear;fume hood
+R301,Auditorium,100,auditorium,A,3,projector;audio;stage
+R302,Large Lecture Hall,80,lecture_hall,A,3,projector;whiteboard;audio

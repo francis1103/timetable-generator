@@ -1,0 +1,11 @@
+student_id,name,email,department,department_id,year,semester,enrolled_courses,max_subjects_per_day
+S001,John Doe,john.doe@student.edu,Computer Science,CS,2,3,CS101;CS102;MATH201,5
+S002,Jane Smith,jane.smith@student.edu,Computer Science,CS,2,3,CS101;CS102;MATH201,5
+S003,Mike Johnson,mike.johnson@student.edu,Computer Science,CS,2,3,CS101;CS201;MATH201,5
+S004,Sarah Williams,sarah.williams@student.edu,Computer Science,CS,3,5,CS201;CS202;CS301,5
+S005,Tom Brown,tom.brown@student.edu,Mathematics,MATH,2,3,MATH101;MATH201;CS101,5
+S006,Lisa Davis,lisa.davis@student.edu,Mathematics,MATH,2,3,MATH101;MATH201;PHY101,5
+S007,Robert Miller,robert.miller@student.edu,Physics,PHY,1,1,PHY101;MATH101,5
+S008,Emily Wilson,emily.wilson@student.edu,Physics,PHY,1,1,PHY101;MATH101,5
+S009,David Moore,david.moore@student.edu,Computer Science,CS,3,5,CS201;CS202;CS301,5
+S010,Jennifer Taylor,jennifer.taylor@student.edu,Computer Science,CS,2,3,CS101;CS102;MATH201,5

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # FastAPI Backend Dependencies
 
 # Core FastAPI dependencies
@@ -31,3 +32,63 @@ requests==2.32.3          # For making HTTP requests if needed
 #   (or visit https://pytorch.org/get-started/locally/ for the right command for your system)
 #
 # These are commented out to avoid installation issues and reduce initial setup time.
+=======
+# Core Dependencies
+numpy>=1.24.0
+pandas>=2.0.0
+scipy>=1.10.0
+
+# Optimization Algorithms
+deap>=1.4.1  # For NSGA-II genetic algorithm
+python-constraint>=1.4.0  # For CSP solving
+pulp>=2.7.0  # For Integer Linear Programming
+
+# Machine Learning
+scikit-learn>=1.3.0
+tensorflow>=2.13.0  # For deep reinforcement learning
+gym>=0.26.0  # For RL environments
+
+# Natural Language Processing
+spacy>=3.6.0
+transformers>=4.30.0
+nltk>=3.8.0
+
+# Data Processing
+openpyxl>=3.1.0  # Excel support
+xlrd>=2.0.1
+gspread>=5.10.0  # Google Sheets integration
+oauth2client>=4.1.3
+
+# Web API
+fastapi>=0.100.0
+uvicorn>=0.23.0
+websockets>=11.0
+pydantic>=2.0.0
+
+# Database
+sqlalchemy>=2.0.0
+alembic>=1.11.0
+psycopg2-binary>=2.9.0  # PostgreSQL support
+
+# Export Formats
+reportlab>=4.0.0  # PDF generation
+python-docx>=0.8.11
+icalendar>=5.0.0
+
+# Utilities
+python-dotenv>=1.0.0
+loguru>=0.7.0
+click>=8.1.0  # CLI interface
+tqdm>=4.65.0  # Progress bars
+
+# Testing
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.1.0
+hypothesis>=6.82.0  # Property-based testing
+
+# Development
+black>=23.7.0
+flake8>=6.0.0
+mypy>=1.4.0
+>>>>>>> model

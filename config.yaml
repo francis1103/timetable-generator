@@ -1,0 +1,66 @@
+# Configuration for Timetable Scheduler
+
+# Optimization Settings
+optimization:
+  population_size: 100
+  num_generations: 50
+  crossover_probability: 0.7
+  mutation_probability: 0.2
+  tournament_size: 3
+  elite_size: 10
+  max_stagnant_generations: 15
+
+# Constraint Weights
+constraints:
+  hard:
+    room_overlap: infinity
+    faculty_overlap: infinity
+    student_overlap: infinity
+    room_capacity: infinity
+    faculty_availability: infinity
+    student_availability: infinity
+    max_subjects_per_day: infinity
+  
+  soft:
+    faculty_workload_balance: 2.0
+    minimize_travel_time: 1.5
+    time_preference: 1.0
+    subject_spacing: 1.0
+    consecutive_class_limit: 1.5
+
+# Time Preferences
+preferences:
+  default_ideal_faculty_hours: 15.0
+  max_consecutive_classes: 3
+  min_break_between_classes: 0  # minutes
+  preferred_session_duration: 60  # minutes
+
+# Export Settings
+export:
+  default_format: pdf
+  include_statistics: true
+  include_conflicts: true
+  include_recommendations: true
+
+# Database Settings
+database:
+  type: sqlite  # sqlite or postgresql
+  path: database/timetable.db
+  store_history: true
+  max_historical_schedules: 50
+
+# API Settings
+api:
+  host: "0.0.0.0"
+  port: 8000
+  enable_cors: true
+  enable_websocket: true
+  max_connections: 100
+
+# Learning Settings
+learning:
+  enabled: false  # Enable reinforcement learning
+  learning_rate: 0.001
+  discount_factor: 0.95
+  exploration_rate: 0.1
+  training_episodes: 1000
