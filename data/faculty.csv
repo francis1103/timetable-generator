@@ -1,0 +1,9 @@
+faculty_id,name,email,department,department_id,specializations,max_hours_per_week,max_consecutive_classes
+F001,Dr. Alice Smith,alice.smith@university.edu,Computer Science,CS,algorithms;data structures,18,2
+F002,Dr. Bob Johnson,bob.johnson@university.edu,Computer Science,CS,machine learning;AI,20,3
+F003,Dr. Carol Williams,carol.williams@university.edu,Computer Science,CS,databases;software engineering,16,2
+F004,Dr. David Brown,david.brown@university.edu,Mathematics,MATH,calculus;analysis,18,2
+F005,Dr. Emma Davis,emma.davis@university.edu,Mathematics,MATH,linear algebra;discrete math,17,3
+F006,Dr. Frank Miller,frank.miller@university.edu,Physics,PHY,mechanics;thermodynamics,19,2
+F007,Dr. Grace Wilson,grace.wilson@university.edu,Physics,PHY,electromagnetism;optics,18,2
+F008,Dr. Henry Moore,henry.moore@university.edu,Computer Science,CS,programming;theory,20,3

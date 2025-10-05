@@ -1,0 +1,11 @@
+course_id,name,code,department,department_id,credits,duration_minutes,sessions_per_week,room_type,max_students,is_lab
+CS101,Data Structures,CS101,Computer Science,CS,4,60,3,lecture_hall,50,0
+CS102,Algorithms,CS102,Computer Science,CS,4,60,2,lecture_hall,50,0
+CS201,Machine Learning,CS201,Computer Science,CS,4,60,2,computer_lab,40,1
+CS202,Artificial Intelligence,CS202,Computer Science,CS,4,60,2,lecture_hall,45,0
+CS301,Database Systems,CS301,Computer Science,CS,3,60,3,computer_lab,35,1
+MATH101,Calculus I,MATH101,Mathematics,MATH,3,60,2,lecture_hall,60,0
+MATH201,Linear Algebra,MATH201,Mathematics,MATH,3,60,2,lecture_hall,55,0
+MATH301,Discrete Mathematics,MATH301,Mathematics,MATH,3,60,2,lecture_hall,50,0
+PHY101,Physics I,PHY101,Physics,PHY,4,60,2,laboratory,40,1
+PHY102,Physics II,PHY102,Physics,PHY,4,60,2,laboratory,40,1
