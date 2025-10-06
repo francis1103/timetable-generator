@@ -1,4 +1,4 @@
-"""Complete API test for timetable_output.xlsx file with customizable class duration and breaks."""
+"""Demo timetable test with predefined class duration and breaks."""
 
 import requests
 import json
@@ -8,62 +8,50 @@ from datetime import datetime, timedelta
 BASE_URL = "http://127.0.0.1:8000"
 EXCEL_FILE = r"C:\Users\mrunk\Downloads\timetable_output.xlsx"
 
-def get_user_schedule_preferences():
-    """Get user input for schedule preferences."""
+def get_demo_schedule_preferences():
+    """Get demo schedule preferences."""
     print("\n" + "="*60)
-    print("SCHEDULE CONFIGURATION")
+    print("DEMO SCHEDULE CONFIGURATION")
+    print("="*60)
+    print("Using demo settings:")
+    print("  Class Duration: 50 minutes")
+    print("  Start Time: 09:00")
+    print("  Break Duration: 15 minutes")
+    print("  Lunch Duration: 45 minutes")
+    print("  Assembly: Enabled (15 minutes)")
     print("="*60)
     
-    # Get class duration
-    while True:
-        try:
-            duration = input("Enter class duration in minutes (30-120): ")
-            duration = int(duration)
-            if 30 <= duration <= 120:
-                break
-            else:
-                print("Please enter a duration between 30 and 120 minutes.")
-        except ValueError:
-            print("Please enter a valid number.")
-    
-    # Get start time
-    while True:
-        try:
-            start_time = input("Enter start time (HH:MM format, e.g., 09:00): ")
-            datetime.strptime(start_time, "%H:%M")
-            break
-        except ValueError:
-            print("Please enter time in HH:MM format (e.g., 09:00).")
-    
-    # Get break preferences
-    print("\nBreak Configuration:")
-    break_duration = input("Enter break duration in minutes (default 15): ") or "15"
-    lunch_duration = input("Enter lunch duration in minutes (default 60): ") or "60"
-    
-    try:
-        break_duration = int(break_duration)
-        lunch_duration = int(lunch_duration)
-    except ValueError:
-        break_duration = 15
-        lunch_duration = 60
-    
     return {
-        'class_duration': duration,
-        'start_time': start_time,
-        'break_duration': break_duration,
-        'lunch_duration': lunch_duration
+        'class_duration': 50,
+        'start_time': '09:00',
+        'break_duration': 15,
+        'lunch_duration': 45,
+        'assembly_enabled': True,
+        'assembly_duration': 15
     }
 
 def generate_time_schedule(preferences):
-    """Generate time schedule with breaks and lunch."""
+    """Generate time schedule with breaks, lunch, and optional assembly."""
     start_time = datetime.strptime(preferences['start_time'], "%H:%M")
     class_duration = preferences['class_duration']
     break_duration = preferences['break_duration']
     lunch_duration = preferences['lunch_duration']
+    assembly_enabled = preferences.get('assembly_enabled', False)
+    assembly_duration = preferences.get('assembly_duration', 0)
     
     schedule = []
     current_time = start_time
     period_count = 0
+    
+    # Add assembly if enabled
+    if assembly_enabled and assembly_duration > 0:
+        assembly_end = current_time + timedelta(minutes=assembly_duration)
+        schedule.append({
+            'period': 'ASSEMBLY',
+            'time_range': f"{current_time.strftime('%H:%M')}-{assembly_end.strftime('%H:%M')}",
+            'duration': f'{assembly_duration} min'
+        })
+        current_time = assembly_end
     
     # Generate 8 periods with breaks
     for i in range(8):
@@ -126,7 +114,7 @@ def wait_for_server(max_attempts=10):
 def test_preview(schedule_preferences):
     """Test the preview endpoint with custom schedule."""
     print("="*80)
-    print("TEST 1: Preview Excel Data with Custom Schedule")
+    print("TEST 1: Preview Excel Data with Custom Schedule & Breaks")
     print("="*80)
     
     # Generate custom time schedule
@@ -157,106 +145,80 @@ def test_preview(schedule_preferences):
             print("CUSTOM TIMETABLE WITH BREAKS AND LUNCH:")
             print("=" * 120)
             
-            # Display time schedule
-            print(f"Class Duration: {schedule_preferences['class_duration']} minutes")
-            print(f"Break Duration: {schedule_preferences['break_duration']} minutes")
-            print(f"Lunch Duration: {schedule_preferences['lunch_duration']} minutes\n")
+            # Display time schedule configuration
+            print(f"⏰ Class Duration: {schedule_preferences['class_duration']} minutes")
+            print(f"🍵 Break Duration: {schedule_preferences['break_duration']} minutes")
+            print(f"🍽️ Lunch Duration: {schedule_preferences['lunch_duration']} minutes")
+            print(f"🕘 Start Time: {schedule_preferences['start_time']}")
+            print()
             
-            print(f"{'Period':<15} {'Time Range':<15} {'Duration':<12} {'Course/Activity':<30}")
-            print("-" * 120)
-            
-            # Map periods to courses from data
+            # Show daily schedule for Monday as example
             course_data = preview['data']
+            monday_data = course_data[0] if course_data else {}
+            
+            print("SAMPLE DAILY SCHEDULE (MONDAY):")
+            print("-" * 80)
+            print(f"{'Period':<18} {'Time Range':<15} {'Duration':<12} {'Course/Activity':<25}")
+            print("-" * 80)
+            
+            period_idx = 1
+            assembly_shown = False
+            
+            for schedule_item in time_schedule:
+                period = schedule_item['period']
+                time_range = schedule_item['time_range']
+                duration = schedule_item['duration']
+                
+                if period == 'ASSEMBLY':
+                    activity = "Daily Assembly"
+                    icon = "🏫"
+                    period_display = f"{icon} {period}"
+                    assembly_shown = True
+                elif 'BREAK' in period or 'LUNCH' in period:
+                    activity = period
+                    icon = "🍵" if "BREAK" in period else "🍽️"
+                    period_display = f"{icon} {period}"
+                else:
+                    # Map to course data - adjust for assembly
+                    if assembly_shown:
+                        # If assembly was shown, first course period maps to Hour 1 (which was Assembly in data)
+                        hour_col = f'Hour {period_idx}'
+                        activity = monday_data.get(hour_col, 'Free Period')
+                        if period_idx == 1 and activity == 'Assembly':
+                            activity = monday_data.get('Hour 2', 'Free Period')  # Skip assembly, get next course
+                    else:
+                        hour_col = f'Hour {period_idx}'
+                        activity = monday_data.get(hour_col, 'Free Period')
+                    
+                    period_display = f"📚 {period}"
+                    period_idx += 1
+                    if period_idx > 8:  # Max 8 course periods
+                        break
+                
+                print(f"{period_display:<18} {time_range:<15} {duration:<12} {str(activity)[:25]:<25}")
+            
+            # Show complete weekly overview
+            print(f"\n\nCOMPLETE WEEKLY SCHEDULE OVERVIEW:")
+            print("=" * 120)
             
             for day_idx, day_row in enumerate(course_data):
                 if day_idx >= 5:  # Show only first 5 days
                     break
                     
                 day_name = day_row.get('Day', f'Day {day_idx+1}')
-                print(f"\n{day_name.upper()}:")
-                print("-" * 40)
+                print(f"\n📅 {day_name.upper()}:")
+                print("-" * 60)
                 
-                period_idx = 0
-                for schedule_item in time_schedule:
-                    period = schedule_item['period']
-                    time_range = schedule_item['time_range']
-                    duration = schedule_item['duration']
+                # Show only class periods (no breaks in overview)
+                for i in range(1, 9):  # Hours 1-8
+                    hour_col = f'Hour {i}'
+                    course = day_row.get(hour_col, 'Free')
                     
-                    if 'BREAK' in period or 'LUNCH' in period:
-                        activity = period
-                    else:
-                        # Map to course data
-                        hour_col = f'Hour {period_idx + 1}'
-                        activity = day_row.get(hour_col, 'Free Period')
-                        period_idx += 1
-                        if period_idx > 8:  # Max 8 course periods
-                            break
-                    
-                    print(f"{period:<15} {time_range:<15} {duration:<12} {str(activity)[:30]:<30}")
-            
-            return True
-        else:
-            print(f"\n✗ FAILED!")
-            print(f"Error: {response.text}")
-            return False
-            
-    except Exception as e:
-        print(f"\n✗ EXCEPTION: {type(e).__name__}: {e}")
-        return False
-        
-        print(f"Status Code: {response.status_code}")
-        
-        if response.status_code == 200:
-            data = response.json()
-            preview = data['preview']
-            
-            print(f"\n✓ SUCCESS!")
-            print(f"\nFile: {preview['file_path']}")
-            print(f"Columns ({preview['total_columns']}): {', '.join(preview['columns'])}")
-            print(f"Rows shown: {preview['rows_shown']}\n")
-            
-            # Display timetable with time information
-            print("Timetable Preview with Time Information:")
-            print("=" * 120)
-            
-            # Time slots mapping
-            time_slots = {
-                'Hour 1': '09:00-10:00',
-                'Hour 2': '10:00-11:00', 
-                'Hour 3': '11:00-12:00',
-                'Hour 4': '12:00-13:00',
-                'Hour 5': '13:00-14:00',
-                'Hour 6': '14:00-15:00',
-                'Hour 7': '15:00-16:00',
-                'Hour 8': '16:00-17:00'
-            }
-            
-            # Headers with time information
-            headers = preview['columns']
-            print(f"{'Day':<12} ", end="")
-            for header in headers[1:]:  # Skip 'Day' column
-                time_info = time_slots.get(header, header)
-                print(f"| {time_info[:12]:<12} ", end="")
-            print()
-            print("-" * 120)
-            
-            # Data rows with time context
-            for idx, row in enumerate(preview['data']):
-                day = str(row.get('Day', f'Row {idx}'))
-                print(f"{day:<12} ", end="")
-                
-                for header in headers[1:]:  # Skip 'Day' column
-                    course = str(row.get(header, 'FREE'))[:12]
-                    print(f"| {course:<12} ", end="")
-                print()
-            
-            # Show time legend
-            print("\n" + "=" * 120)
-            print("TIME SCHEDULE LEGEND:")
-            print("-" * 40)
-            for hour, time_range in time_slots.items():
-                print(f"{hour:<8} = {time_range}")
-            print("-" * 40)
+                    # Find corresponding time slot
+                    class_periods = [item for item in time_schedule if item['period'].startswith('Period')]
+                    if i <= len(class_periods):
+                        time_info = class_periods[i-1]['time_range']
+                        print(f"  Period {i} ({time_info}): {course}")
             
             return True
         else:
@@ -303,29 +265,38 @@ def test_load():
         return False
 
 def main():
-    """Run all tests with user preferences."""
+    """Run demo with predefined schedule preferences."""
     print("\n" + "="*80)
-    print("AI TIMETABLE SCHEDULER - API TESTS WITH CUSTOM SCHEDULE")
+    print("AI TIMETABLE SCHEDULER - DEMO WITH BREAKS & CUSTOM DURATION")
     print("="*80)
     print(f"Target File: {EXCEL_FILE}")
     print(f"API Server: {BASE_URL}")
     print("="*80)
     
-    # Get user preferences for schedule
-    preferences = get_user_schedule_preferences()
+    # Get demo preferences
+    preferences = get_demo_schedule_preferences()
     
-    print(f"\n📅 SCHEDULE CONFIGURATION:")
-    print(f"   Class Duration: {preferences['class_duration']} minutes")
-    print(f"   Start Time: {preferences['start_time']}")
-    print(f"   Break Duration: {preferences['break_duration']} minutes")
-    print(f"   Lunch Duration: {preferences['lunch_duration']} minutes")
+    print(f"\n📅 SCHEDULE SUMMARY:")
+    print(f"   ⏰ Class Duration: {preferences['class_duration']} minutes")
+    print(f"   🕘 Start Time: {preferences['start_time']}")
+    print(f"   🍵 Break Duration: {preferences['break_duration']} minutes")
+    print(f"   🍽️ Lunch Duration: {preferences['lunch_duration']} minutes")
+    
+    if preferences.get('assembly_enabled', False):
+        print(f"   🏫 Assembly: {preferences['assembly_duration']} minutes (Enabled)")
+        total_periods = "8 classes + 3 breaks + 1 assembly"
+    else:
+        print(f"   🏫 Assembly: Disabled")
+        total_periods = "8 classes + 3 breaks"
+    
+    print(f"   📊 Total Periods: {total_periods}")
     
     if not wait_for_server():
         print("\n⚠ Please start the server with: .\\start_api.ps1")
         return
     
     results = {
-        "Preview Data with Custom Schedule": test_preview(preferences),
+        "Preview Data with Breaks": test_preview(preferences),
         "Load Data": test_load()
     }
     
@@ -344,6 +315,21 @@ def main():
     print("="*80)
     print(f"Results: {total_passed}/{total_tests} tests passed")
     print("="*80)
+    
+    # Show break schedule summary
+    schedule = generate_time_schedule(preferences)
+    print(f"\n📋 DAILY SCHEDULE STRUCTURE:")
+    print("-" * 50)
+    for item in schedule:
+        period = item['period']
+        time_range = item['time_range']
+        if period == 'ASSEMBLY':
+            print(f"  🏫 {period}: {time_range}")
+        elif 'Period' in period:
+            print(f"  📚 {period}: {time_range}")
+        else:
+            icon = "🍵" if "MORNING" in period or "AFTERNOON" in period else "🍽️"
+            print(f"  {icon} {period}: {time_range}")
 
 if __name__ == "__main__":
     main()
